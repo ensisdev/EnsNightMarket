@@ -6,34 +6,34 @@
 default-action: showcase
 commands:
   open:
-    aliases: []
+    aliases: [ac]
     permission: ""
     description: "Open the market"
     action: showcase
   close:
-    aliases: [hide]
+    aliases: [hide, kapat]
     permission: ""
     description: "Close the market"
     action: close
-  refresh::
-    aliases: []
+  refresh:
+    aliases: [yenile]
     permission: ""
-    description: "Pay to refresh the market
+    description: "Pay to refresh the market"
     action: refresh-paid
   info:
-    aliases: []
+    aliases: [bilgi]
     permission: ""
     description: "Plugin information"
     action: info
   help:
-    aliases: []
+    aliases: [yardim]
     permission: ""
     description: "Help"
     action: help
   admin:
     aliases: []
     permission: ensnightmarket.admin
-    description: "Admin menu "
+    description: "Admin menu"
     action: admin-menu
     subcommands:
       refresh:
@@ -42,12 +42,12 @@ commands:
         description: "Refresh the market data"
         action: admin-refresh
       reset:
-        aliases: []
+        aliases: [sifirla]
         permission: ensnightmarket.admin
         description: "Delete all market data and reset the market"
         action: admin-reset
       reload:
-        aliases: []
+        aliases: [reload]
         permission: ensnightmarket.reload
         description: "Refresh the configuration"
         action: admin-reload
@@ -57,7 +57,7 @@ commands:
         description: "Animation tools"
         action: admin-anim
       lang:
-        aliases: []
+        aliases: [dil]
         permission: ensnightmarket.admin
         description: "Change the language"
         action: admin-lang
