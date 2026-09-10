@@ -1,5 +1,4 @@
 $schema: https://api.gitbook.com/gitbook-docs.yaml
-
 site:
   title: EnsNightMarket Docs
   structure:
@@ -9,5 +8,5 @@ site:
       path: docs
       default: true
       content:
-        directory: .
+        directory: ./docs
         language: en
