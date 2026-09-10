@@ -2,7 +2,7 @@ $schema: https://api.gitbook.com/gitbook-docs.yaml
 
 site:
   title: EnsNightMarket Docs
-  description: Documentation for EnsNightMarket — a modern per-player Night Market plugin for Paper 1.20+
+  description: Documentation for EnsNightMarket - a modern per-player Night Market plugin for Paper 1.20+
 
 structure:
   - type: section
