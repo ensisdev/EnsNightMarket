@@ -2,19 +2,12 @@ $schema: https://api.gitbook.com/gitbook-docs.yaml
 
 site:
   title: EnsNightMarket Docs
-  description: Documentation for EnsNightMarket - a modern per-player Night Market plugin for Paper 1.20+
-
-structure:
-  - type: section
-    key: docs
-    title: Documentation
-    path: docs
-    children:
-      - type: space
-        key: main
-        title: English
-        path: .
-        default: true
-        content:
-          directory: .
-          language: en
+  structure:
+    - type: space
+      key: main
+      title: Documentation
+      path: docs
+      default: true
+      content:
+        directory: .
+        language: en
