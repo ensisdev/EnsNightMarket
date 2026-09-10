@@ -1,0 +1,114 @@
+economy:
+  provider: VAULT # VAULT or PLAYER_POINTS
+
+language: en_en  # tr_tr or en_en
+
+market:
+  slots: 6
+  refresh-hours: 72
+  unique-offers: true
+
+schedule:
+  # true ise pazar sadece asagidaki MC saat araliginda acilir (0-23999 tick)
+  enabled: false
+  open-tick: 13000
+  close-tick: 23000
+
+refresh:
+  # Oyuncu kendi pazarini ucret karsiligi yeniler (/nightmarket yenile)
+  enabled: true
+  price: 500.0
+  cooldown-minutes: 30
+
+session:
+  # 0 = sinirsiz
+  duration-minutes: 10
+  follow-enabled: true
+  # 0.1 gevsek - 1.0 aninda, yuksek deger daha siki takip
+  follow-speed: 0.45
+  # Bu mesafenin ustu suzulme degil anlik tasimadir (ender pearl vb.)
+  follow-snap-distance: 12.0
+  # Ayaklar bu mesafeden az oynarsa takip calismaz (sadece donus kutulari oynatmaz)
+  follow-move-threshold: 0.2
+
+protection:
+  # WorldGuard bolge kontrolu (WG kurulu degilse yok sayilir)
+  enabled: false
+  # BLACKLIST: listedekilerde yasak, WHITELIST: sadece listedekilerde serbest
+  mode: BLACKLIST
+  regions:
+    - "spawn"
+
+floating:
+  enabled: true
+  ambient-particles: true
+  scale: 1.55
+  bob-amplitude: 0.12
+  bob-speed: 0.07
+  rotation-speed: 1.2
+  view-range: 32.0
+  interpolation-ticks: 3
+  text-height: 0.85
+  # Kafalar oyuncunun onunde yay dizilimiyle yayilir
+  forward-distance: 4.5
+  eye-height: 1.45
+  spacing: 2.2
+  layout-formation: ARC
+  layout-arc-depth: 1.6
+  layout-height-wave: 0.0
+
+animation:
+  reveal-duration-ticks: 24
+  enable-advanced-reveal: true
+  reveal-easing: EASE_OUT_ELASTIC
+  motion-pattern:
+    common: BOB
+    uncommon: WAVE
+    rare: ORBIT
+    legendary: VORTEX
+    mysterious: FIGURE_EIGHT
+  reveal-shape:
+    common: SPHERE
+    uncommon: RING
+    rare: SPIRAL
+    legendary: SHOCKWAVE
+    mysterious: BURST
+
+purchase-feedback:
+  # Satin almada baslik + ses (baslik sadece agirligi esik ve alti nadirliklerde cikar)
+  title-enabled: true
+  title-max-weight: 15.0
+  sound-enabled: true
+
+cinematics:
+  enabled: true
+  spawn-ceremony: true
+  spawn-stagger-ticks: 4
+  spawn-sound: true
+  reveal-flash: true
+  reveal-sound-ladder: true
+  idle-aura: true
+  aura-max-weight: 4.0
+  idle-twinkle: true
+  close-animation: true
+  purchase-confetti: true
+  ambient-sound: false
+
+performance:
+  animation-quality: HIGH
+  enable-lod: true
+  max-particles-per-player: 200
+  animation-distance: 32.0
+  world-blacklist:
+    - "world_nether"
+    - "world_the_end"
+  async-storage: true
+
+storage:
+  type: SQLITE # SQLITE or MYSQL
+  mysql:
+    host: localhost
+    port: 3306
+    database: ensnightmarket
+    username: root
+    password: change-me

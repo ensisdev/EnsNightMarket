@@ -1,0 +1,72 @@
+rarities:
+  common:
+    display-name: "<green>Yaygın"
+    weight: 50.0
+    color: "#55FF55"
+    head:
+      # TEXTURE_VALUE = minecraft-heads.com "Value" alanındaki Base64 (eyJ0ZXh0dXJlcyI6... ile baslar)
+      # Diger desteklenen turler: BASE64, RAW / VALUE (sadece texture id veya URL), URL / TEXTURE_URL
+      type: TEXTURE_VALUE
+      # Mossy Chest: https://minecraft-heads.com/custom-heads/head/64902-mossy-chest
+      value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTdlMmMwZGM2ZTQwYjM3NDUzMTRhODYwZjQ3OTgwYzJkYjg2MGM4ZDkwNDNjNmNlMjEzZDI3YTJkYWM4YzliMyJ9fX0="
+    effects:
+      particle: VILLAGER_HAPPY
+      particle-count: 3
+      sound: BLOCK_NOTE_BLOCK_PLING
+      pitch: 1.0
+
+  uncommon:
+    display-name: "<aqua>Sıradışı"
+    weight: 30.0
+    color: "#55FFFF"
+    head:
+      type: TEXTURE_VALUE
+      # Royal Epic Quest Chest: https://minecraft-heads.com/custom-heads/head/51725-royal-epic-quest-chest
+      value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDUxYTVlOTUyNGU1ZGMzZDlmYTEzZmYzOTVlYjY4MjRmMjY3NjE1NTZhNjY5YTZiYTk0MDI5MGZkY2JiNjBmNSJ9fX0="
+    effects:
+      particle: END_ROD
+      particle-count: 4
+      sound: BLOCK_AMETHYST_BLOCK_CHIME
+      pitch: 1.0
+
+  rare:
+    display-name: "<light_purple>Nadir"
+    weight: 15.0
+    color: "#AA55FF"
+    head:
+      type: TEXTURE_VALUE
+      # Voided Epic Quest Chest: https://minecraft-heads.com/custom-heads/head/51722-voided-epic-quest-chest
+      value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGQ2YTYwZTU3OTlmNGVkYjFiZjUyZGY0OTQ3NGQ3YjQyOGM5NjRlNGE5NDEzMjhlMjQxYTFlYWI5NjAyNTg2OSJ9fX0="
+    effects:
+      particle: PORTAL
+      particle-count: 5
+      sound: BLOCK_ENCHANTMENT_TABLE_USE
+      pitch: 1.0
+
+  legendary:
+    display-name: "<gold>Efsanevi"
+    weight: 4.0
+    color: "#FFAA00"
+    head:
+      type: TEXTURE_VALUE
+      # Marble Epic Quest Chest: https://minecraft-heads.com/custom-heads/head/51723-marble-epic-quest-chest
+      value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2Q1OTI0MDJhMjk0ZWZlZDNiOGI2ZTU5YTUzYzJmYmU3MWVhYmQ4NWVkMDVmYTZiMGIwYmFhMDQzMDNjMDg2ZiJ9fX0="
+    effects:
+      particle: TOTEM_OF_UNDYING
+      particle-count: 8
+      sound: ENTITY_PLAYER_LEVELUP
+      pitch: 1.15
+
+  mysterious:
+    display-name: "<red>Gizemli"
+    weight: 1.0
+    color: "#FF5555"
+    head:
+      type: TEXTURE_VALUE
+      # Mystery ST Chest: https://minecraft-heads.com/custom-heads/head/64904-mystery-st-chest
+      value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2EzMTMwZDFjMDQ0MzY1ODk1YzU4MjM5ZjdkMDYxNTUwOWZmMzhmM2Y3YTdkZmE3ZjI5YmI5NDJkYjFkZGUzZSJ9fX0="
+    effects:
+      particle: SOUL_FIRE_FLAME
+      particle-count: 10
+      sound: ENTITY_ENDER_DRAGON_GROWL
+      pitch: 1.4

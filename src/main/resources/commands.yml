@@ -1,0 +1,63 @@
+# EnsNightMarket komut kaydi
+# Yeni komut eklemek: mevcut bir action ile yeni blok ac
+# Komut silmek: blogu sil (bilinmeyen komut yardimi acar)
+# action listesi: showcase, close, refresh-paid, info, help,
+#   admin-menu, admin-refresh, admin-reset, admin-reload, admin-anim, admin-lang
+default-action: showcase
+commands:
+  open:
+    aliases: []
+    permission: ""
+    description: "Open the market"
+    action: showcase
+  close:
+    aliases: [hide]
+    permission: ""
+    description: "Close the market"
+    action: close
+  refresh::
+    aliases: []
+    permission: ""
+    description: "Pay to refresh the market
+    action: refresh-paid
+  info:
+    aliases: []
+    permission: ""
+    description: "Plugin information"
+    action: info
+  help:
+    aliases: []
+    permission: ""
+    description: "Help"
+    action: help
+  admin:
+    aliases: []
+    permission: ensnightmarket.admin
+    description: "Admin menu "
+    action: admin-menu
+    subcommands:
+      refresh:
+        aliases: []
+        permission: ensnightmarket.admin
+        description: "Refresh the market data"
+        action: admin-refresh
+      reset:
+        aliases: []
+        permission: ensnightmarket.admin
+        description: "Delete all market data and reset the market"
+        action: admin-reset
+      reload:
+        aliases: []
+        permission: ensnightmarket.reload
+        description: "Refresh the configuration"
+        action: admin-reload
+      anim:
+        aliases: []
+        permission: ensnightmarket.admin
+        description: "Animation tools"
+        action: admin-anim
+      lang:
+        aliases: []
+        permission: ensnightmarket.admin
+        description: "Change the language"
+        action: admin-lang

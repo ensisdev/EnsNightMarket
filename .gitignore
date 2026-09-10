@@ -1,0 +1,26 @@
+# ── Build ──
+target/
+out/
+build/
+*.jar
+
+# ── IDE ──
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Local / test ──
+run/
+build_*.txt
+build_*.log
+*.log
+video_frames/
+SalvoNightMarket/
+
+# ── Git internal ──
+.git/
+

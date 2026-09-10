@@ -1,0 +1,74 @@
+offers:
+  enchanted_golden_apple:
+    display-name: "<yellow>Enchanted Golden Apple"
+    material: ENCHANTED_GOLDEN_APPLE
+    amount: 1
+    base-price: 1500.0
+    discount-min: 30
+    discount-max: 55
+    stock-min: 1
+    stock-max: 2
+    rarity: random
+    max-purchases: 0
+
+  experience_bottle:
+    display-name: "<green>Experience Bottle"
+    material: EXPERIENCE_BOTTLE
+    amount: 16
+    base-price: 1222.0
+    discount-min: 10
+    discount-max: 25
+    stock-min: 1
+    stock-max: 2
+    rarity: random
+
+  golden_apple:
+    display-name: "<yellow>Golden Apple"
+    material: GOLDEN_APPLE
+    amount: 4
+    base-price: 800.0
+    discount-min: 15
+    discount-max: 35
+    stock-min: 1
+    stock-max: 3
+    rarity: random
+
+  ender_pearl:
+    display-name: "<dark_purple>Ender Pearl"
+    material: ENDER_PEARL
+    amount: 16
+    base-price: 700.0
+    discount-min: 20
+    discount-max: 45
+    stock-min: 1
+    stock-max: 3
+    rarity: random
+
+  diamond:
+    display-name: "<aqua>Diamond"
+    material: DIAMOND
+    amount: 8
+    base-price: 1200.0
+    discount-min: 10
+    discount-max: 30
+    stock-min: 1
+    stock-max: 3
+    rarity: random
+
+  netherite_ingot:
+    display-name: "<dark_gray>Netherite Ingot"
+    material: NETHERITE_INGOT
+    amount: 1
+    base-price: 4000.0
+    discount-min: 25
+    discount-max: 50
+    stock-min: 1
+    stock-max: 1
+    rarity: random
+
+# Custom item destegi (saglayici eklenti kurulu olmalidir):
+#   material: "oraxen:golden_backpack"
+#   material: "itemsadder:ruby_sword"
+#   material: "nexo:amber_pickaxe"
+#   material: "mmoitems:SWORD:Excalibur"
+# Kafa dokusu icin rarities.yml icinde head.type: HDB ve head.value olarak kafa ID yazilir.
