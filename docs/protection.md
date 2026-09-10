@@ -38,6 +38,9 @@ A WorldGuard state flag (`allow` / `deny` / `undefined`) registered as
 - Region membership is checked at `/nightmarket` (open), during the follow tick
   (probe at the arc center), and follows the region at the player's location.
 - Combining both layers: flag `deny` wins; otherwise the config mode decides.
+- Fail-closed: if WorldGuard is present and protection is enabled but the
+  region query itself errors, the market is denied (with a console warning)
+  rather than silently allowed.
 
 ## Typical Setups
 

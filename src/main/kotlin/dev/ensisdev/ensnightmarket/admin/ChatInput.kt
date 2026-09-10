@@ -23,7 +23,9 @@ object ChatInput : Listener {
         val callback: (String) -> Unit,
         val loreCallback: ((List<String>) -> Unit)?,
         val onCancel: () -> Unit,
-        val expiresAt: Long
+        val expiresAt: Long,
+        /** Guards against Paper+Spigot chat events firing for the same message. */
+        val claim: java.util.concurrent.atomic.AtomicBoolean = java.util.concurrent.atomic.AtomicBoolean(false)
     )
 
     private lateinit var plugin: EnsNightMarket
@@ -82,19 +84,27 @@ object ChatInput : Listener {
     }
 
     // Bukkit evrensel chat eventi: Spigot + Paper + tüm forklar.
+    // Paper'da AsyncChatEvent de ateşlenir; claim bayrağı aynı mesajın iki kez
+    // işlenmesini engeller (hangi event önce gelirse o kazanır).
     @EventHandler(priority = EventPriority.LOWEST)
     fun onChat(e: AsyncPlayerChatEvent) {
         val session = sessions[e.player.uniqueId] ?: return
+        if (!session.claim.compareAndSet(false, true)) return
         e.isCancelled = true
         try { e.recipients.clear() } catch (_: Throwable) {}
         val text = e.message.trim()
-        plugin.server.scheduler.runTask(plugin, Runnable { handle(session, text) })
+        plugin.server.scheduler.runTask(plugin, Runnable {
+            try { handle(session, text) } finally { session.claim.set(false) }
+        })
     }
 
     /** Paper AsyncChatEvent varsa reflection ile de yakala (chat(handle) iptal edilsin). */
     fun handlePaperChat(playerId: java.util.UUID, text: String): Boolean {
         val session = sessions[playerId] ?: return false
-        plugin.server.scheduler.runTask(plugin, Runnable { handle(session, text.trim()) })
+        if (!session.claim.compareAndSet(false, true)) return true
+        plugin.server.scheduler.runTask(plugin, Runnable {
+            try { handle(session, text.trim()) } finally { session.claim.set(false) }
+        })
         return true
     }
 

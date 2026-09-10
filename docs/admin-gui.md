@@ -67,5 +67,7 @@ or **reset** (full wipe) that player.
 
 - The GUI edits live data; player-market changes apply immediately.
 - Large edits are easier in YAML — the GUI is for quick fixes and moderation.
+- Every `offers.yml` / `rarities.yml` write first backs the file up to
+  `offers.yml.bak` / `rarities.yml.bak` (Bukkit rewrites drop file comments).
 - All GUI labels come from the `gui-*` keys in your language file, so they
   translate automatically with the language switch.

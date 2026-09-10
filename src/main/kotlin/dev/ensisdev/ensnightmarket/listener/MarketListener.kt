@@ -33,6 +33,11 @@ class MarketListener(private val plugin: EnsNightMarket) : Listener {
 
     private fun throttled(player: UUID): Boolean {
         val now = System.currentTimeMillis()
+        if (clickCooldowns.size > 512) {
+            clickCooldowns.entries.toList().forEach { (uuid, at) ->
+                if (now - at > 60_000L) clickCooldowns.remove(uuid)
+            }
+        }
         val last = clickCooldowns[player] ?: 0L
         if (now - last < cooldownMs) return true
         clickCooldowns[player] = now
@@ -89,12 +94,13 @@ class MarketListener(private val plugin: EnsNightMarket) : Listener {
         val dir = eye.direction
         val eyeVec = eye.toVector()
         var bestSlot = -1
-        var bestDist = 1.5
+        var bestDist = plugin.config.getDouble("interaction.hit-radius", 1.5).coerceIn(0.5, 4.0)
+        val range = plugin.config.getDouble("interaction.raycast-range", 6.5).coerceIn(2.0, 12.0)
         heads.forEach { (slot, base) ->
             if (base.world?.uid != eye.world?.uid) return@forEach
             val toHead = base.toVector().subtract(eyeVec)
             val t = toHead.dot(dir)
-            if (t < 0.0 || t > 6.5) return@forEach
+            if (t < 0.0 || t > range) return@forEach
             val closest = eyeVec.clone().add(dir.clone().multiply(t))
             val d = closest.distance(base.toVector())
             if (d < bestDist) { bestDist = d; bestSlot = slot }
@@ -145,6 +151,7 @@ class MarketListener(private val plugin: EnsNightMarket) : Listener {
                 "limit" -> "purchase-limit"
                 "inventory" -> "inventory-full"
                 "busy" -> "busy"
+                "not-revealed" -> "not-revealed"
                 else -> "not-found"
             }
             msg(p, key)
@@ -205,7 +212,10 @@ class MarketListener(private val plugin: EnsNightMarket) : Listener {
         if (plugin.display.find(e.entity) != null) e.isCancelled = true
     }
     @EventHandler fun quit(e: PlayerQuitEvent) { plugin.display.removeFor(e.player.uniqueId) }
-    @EventHandler fun join(e: PlayerJoinEvent) { plugin.display.hideAllFrom(e.player) }
+    @EventHandler fun join(e: PlayerJoinEvent) {
+        plugin.display.hideAllFrom(e.player)
+        runCatching { plugin.updateChecker.notify(e.player) }
+    }
     @EventHandler fun teleport(e: PlayerTeleportEvent) { closeSession(e.player) }
     @EventHandler fun worldChange(e: PlayerChangedWorldEvent) { closeSession(e.player) }
     @EventHandler fun death(e: PlayerDeathEvent) { closeSession(e.entity) }

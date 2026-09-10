@@ -71,7 +71,7 @@ class RevealAnimator(private val plugin: JavaPlugin) {
 
         if (fx("reveal-flash")) {
             location.world?.let { world ->
-                world.spawnParticle(Particle.FLASH, location.clone().add(0.0, 0.5, 0.0), 3, 0.2, 0.2, 0.2, 0.0)
+                dev.ensisdev.ensnightmarket.particle.ParticleShapes.flash(world, location.clone().add(0.0, 0.5, 0.0))
                 world.spawnParticle(Particle.END_ROD, location.clone().add(0.0, 0.5, 0.0), 12, 0.4, 0.4, 0.4, 0.08)
             }
             textDisplay?.let { punchText(it, 1.35f) }
@@ -112,6 +112,10 @@ class RevealAnimator(private val plugin: JavaPlugin) {
     }
     private fun tickAnimation(id: UUID) {
         val animation = activeAnimations[id] ?: return
+        if (animation.itemDisplay?.isValid == false) {
+            cancel(id)
+            return
+        }
         val offer = animation.offer
         val rarity = offer.rarity
 
@@ -256,5 +260,17 @@ class RevealAnimator(private val plugin: JavaPlugin) {
     fun stopAll() {
         activeAnimations.values.forEach { it.task?.cancel() }
         activeAnimations.clear()
+    }
+
+    /** Cancels every reveal bound to the given display (called when the display is removed). */
+    fun cancelFor(itemDisplay: ItemDisplay?) {
+        if (itemDisplay == null) return
+        activeAnimations.entries.toList()
+            .filter { it.value.itemDisplay?.uniqueId == itemDisplay.uniqueId }
+            .forEach { cancel(it.key) }
+    }
+
+    private fun cancel(id: UUID) {
+        activeAnimations.remove(id)?.task?.cancel()
     }
 }

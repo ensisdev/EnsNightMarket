@@ -9,6 +9,8 @@ inventory-full: "<prefix><red>Inventory full. <gray>Free some space and right-cl
 not-revealed: "<prefix><gray>First <white>left-click</white> to reveal it."
 busy: "<prefix><yellow>Transaction in progress. <gray>Wait a second and retry."
 not-found: "<prefix><red>Offer not found."
+no-offers: "<prefix><red>No offers available right now. <gray>Ask staff to check offers.yml and rarities.yml."
+update-available: "<prefix><yellow>A new version is available: <white>%version% <gray>(you run <white>%current%<gray>). Download it to stay up to date."
 reload: "<prefix><green>Reloaded."
 showcase: "<prefix><gray>Market open <dark_gray>· <white>left-click <gray>reveals <dark_gray>· <white>right-click <gray>buys"
 showcase-closed: "<prefix><gray>Market closed."

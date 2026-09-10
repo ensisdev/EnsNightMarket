@@ -48,7 +48,7 @@ Storage (SQLite/MySQL, async) persists the market
   live in storage, not memory - restart-safe by design.
 - **Reflection integrations:** PlaceholderAPI, WorldGuard, Oraxen/IA/Nexo/
   MMOItems/HeadDatabase are all optional; missing plugins degrade gracefully.
-- **Paper + Spigot + Folia:** Adventure Components on Paper with legacy string
-  fallbacks; schedulers are wrapped for Folia compatibility.
+- **Paper + Spigot:** Adventure Components on Paper with legacy string
+  fallbacks; Bukkit schedulers throughout (Folia is not supported).
 - **Registry-driven commands:** `commands.yml` maps names to actions, so
   servers customize commands without code changes.

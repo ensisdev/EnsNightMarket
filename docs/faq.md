@@ -10,8 +10,8 @@ Everything is persisted in storage (offers, prices, stock, purchase counts,
 refresh timer). After restart the player continues where they left off.
 
 **Q: Does the market work on Spigot?**
-Yes - Paper features (Adventure Components, display entities) are used when
-available with Spigot fallbacks. Folia schedulers are also supported.
+Yes — Paper features (Adventure Components, display entities) are used when
+available with Spigot fallbacks.
 
 **Q: Which Minecraft versions are supported?**
 1.20+ (display entities are required). Compiled for modern APIs.

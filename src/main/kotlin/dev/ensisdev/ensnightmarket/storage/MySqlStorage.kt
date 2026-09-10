@@ -23,11 +23,11 @@ class MySqlStorage(private val plugin: EnsNightMarket) : Storage {
 
     private fun connect() {
         val c = plugin.config
-        val host = c.getString("storage.mysql.host", "localhost")!!
+        val host = c.getString("storage.mysql.host", "localhost") ?: "localhost"
         val port = c.getInt("storage.mysql.port", 3306)
-        val database = c.getString("storage.mysql.database", "ensnightmarket")!!
-        val user = c.getString("storage.mysql.username", "root")!!
-        val password = c.getString("storage.mysql.password", "change-me")!!
+        val database = c.getString("storage.mysql.database", "ensnightmarket") ?: "ensnightmarket"
+        val user = c.getString("storage.mysql.username", "root") ?: "root"
+        val password = c.getString("storage.mysql.password", "change-me") ?: "change-me"
         connection = DriverManager.getConnection("jdbc:mysql://$host:$port/$database?useSSL=false&characterEncoding=utf8&autoReconnect=true", user, password)
         connection.createStatement().use { st ->
             st.executeUpdate("CREATE TABLE IF NOT EXISTS ensnm_markets (uuid VARCHAR(36) PRIMARY KEY, expires BIGINT NOT NULL)")

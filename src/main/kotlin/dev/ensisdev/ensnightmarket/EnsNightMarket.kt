@@ -28,6 +28,7 @@ class EnsNightMarket : JavaPlugin() {
     lateinit var display: FloatingDisplayManager; private set
     lateinit var schedule: ScheduleManager; private set
     lateinit var protection: ProtectionHook; private set
+    lateinit var updateChecker: dev.ensisdev.ensnightmarket.util.UpdateChecker; private set
     private var placeholder: PlaceholderHook? = null
 
     override fun onEnable() {
@@ -56,12 +57,14 @@ class EnsNightMarket : JavaPlugin() {
         dev.ensisdev.ensnightmarket.command.CommandRegistry.init(this)
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) placeholder = PlaceholderHook(this).also { it.register() }
+        updateChecker = dev.ensisdev.ensnightmarket.util.UpdateChecker(this).also { it.start() }
         if (!economy.available()) logger.warning("No usable economy provider found. Configure Vault or PlayerPoints before purchases.")
         logger.info("EnsNightMarket ${description.version} enabled - ${market.offerDefinitions.size} offers - ${market.rarityDefinitions.size} rarities - ${economy.providerName()}")
         logger.info("Advanced animation system enabled with LOD support.")
     }
 
-    private fun mergeMissingConfigKeys() {
+    /** Public so /nightmarket admin reload can pick up new keys without a restart. */
+    fun mergeMissingConfigKeys() {
         val defaults = org.bukkit.configuration.file.YamlConfiguration()
         runCatching {
             getResource("config.yml")?.use { stream ->
@@ -89,7 +92,7 @@ class EnsNightMarket : JavaPlugin() {
     }
 
     private fun createStorage(): Storage {
-        val baseStorage = when (config.getString("storage.type", "SQLITE")!!.uppercase()) {
+        val baseStorage = when ((config.getString("storage.type", "SQLITE") ?: "SQLITE").uppercase()) {
             "MYSQL", "MARIADB" -> MySqlStorage(this)
             else -> SqliteStorage(this)
         }

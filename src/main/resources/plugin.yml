@@ -2,7 +2,6 @@ name: EnsNightMarket
 version: 2.1.0
 main: dev.ensisdev.ensnightmarket.EnsNightMarket
 api-version: '1.20'
-folia-supported: true
 author: EnsisDev
 description: Per-player Night Market with floating heads. Left-click reveal, right-click buy.
 softdepend: [Vault, PlayerPoints, PlaceholderAPI, Oraxen, ItemsAdder, Nexo, MMOItems, HeadDatabase, WorldGuard]
@@ -18,8 +17,6 @@ permissions:
     default: op
   ensnightmarket.reload:
     default: op
-  ensnightmarket.showcase:
-    default: true
   ensnightmarket.animation:
     default: op
     description: Allows access to animation debug commands

@@ -20,7 +20,7 @@ class EconomyManager(private val plugin: EnsNightMarket) {
 
     fun refresh() {
         vault = null; pointsApi = null; provider = Provider.NONE
-        when (plugin.config.getString("economy.provider", "VAULT")!!.uppercase()) {
+        when ((plugin.config.getString("economy.provider", "VAULT") ?: "VAULT").uppercase()) {
             "VAULT" -> {
                 vault = resolveVault()
                 if (vault != null) provider = Provider.VAULT

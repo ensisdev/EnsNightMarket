@@ -9,7 +9,7 @@ Get `EnsNightMarket-2.1.0.jar` from your build (`mvn clean package` produces
 
 | Software | Notes |
 | --- | --- |
-| **Paper 1.20+** | Recommended. Spigot-compatible fallbacks are built in; Folia is supported. |
+| **Paper 1.20+** | Recommended. Spigot-compatible fallbacks are built in. Folia is **not** supported. |
 | **Java 17+** | Required by modern Paper builds. |
 
 ## 3. Economy Provider
@@ -57,6 +57,7 @@ plugins/EnsNightMarket/
   rarities.yml    # rarity definitions
   offers.yml      # offer definitions
   commands.yml    # command layout
+  cooldowns.yml   # paid-reroll cooldowns (auto-created)
   lang/
     tr_tr.yml     # Turkish messages (fallback)
     en_en.yml     # English messages

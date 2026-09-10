@@ -9,6 +9,8 @@ inventory-full: "<prefix><red>Envanterin dolu. <gray>Yer açıp tekrar sağ tık
 not-revealed: "<prefix><gray>Önce <white>sol tıkla</white>, teklifi aç."
 busy: "<prefix><yellow>İşlem sürüyor. <gray>Bir saniye bekleyip tekrar dene."
 not-found: "<prefix><red>Teklif bulunamadı."
+no-offers: "<prefix><red>Şu an gösterilecek teklif yok. <gray>Yetkiliye offers.yml ve rarities.yml dosyalarını kontrol etmesini söyle."
+update-available: "<prefix><yellow>Yeni sürüm çıktı: <white>%version% <gray>(sende <white>%current%<gray> var). Güncel kalmak için indir."
 reload: "<prefix><green>Yeniden yüklendi."
 showcase: "<prefix><gray>Pazar açıldı <dark_gray>· <white>sol tık <gray>aç <dark_gray>· <white>sağ tık <gray>al"
 showcase-closed: "<prefix><gray>Pazar kapatıldı."

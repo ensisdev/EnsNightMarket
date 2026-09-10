@@ -45,12 +45,21 @@ object PerformanceMonitor {
     private var frameCount = 0
     private var followTotal = 0L
     private var followFrames = 0
+    /** Sliding window: lifetime averages go stale on long-running servers, so the
+     *  counters reset automatically every 30 minutes. */
+    private var windowStart = System.currentTimeMillis()
+    private const val WINDOW_MS = 30 * 60_000L
+
+    private fun window() {
+        if (System.currentTimeMillis() - windowStart >= WINDOW_MS) reset()
+    }
 
     fun startTracking(key: String) {
         animationTimes[key] = System.nanoTime()
     }
 
     fun endTracking(key: String) {
+        window()
         val startTime = animationTimes[key] ?: return
         val elapsed = System.nanoTime() - startTime
         animationTimes[key] = elapsed
@@ -59,11 +68,13 @@ object PerformanceMonitor {
     }
 
     fun recordParticles(key: String, count: Int) {
+        window()
         particleCounts[key] = count
         totalParticles = (totalParticles + count).coerceAtMost(Int.MAX_VALUE - 1000)
     }
 
     fun recordFollow(nanos: Long) {
+        window()
         followTotal = (followTotal + nanos).coerceAtMost(Long.MAX_VALUE - 1_000_000_000L)
         followFrames++
     }
@@ -88,6 +99,7 @@ object PerformanceMonitor {
         frameCount = 0
         followTotal = 0L
         followFrames = 0
+        windowStart = System.currentTimeMillis()
     }
 
     fun getStats(): PerformanceStats {

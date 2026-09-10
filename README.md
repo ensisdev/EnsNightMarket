@@ -13,7 +13,7 @@ visible only to you. **Left-click** reveals the reward, **right-click** buys it.
 - **Five rarities out of the box** — Yaygın, Sıradışı, Nadir, Efsanevi,
   Gizemli — with weighted odds and unlimited custom rarities.
 - **Server-owner friendly** — full in-game admin GUI, data-driven
-  `commands.yml`, Vault or PlayerPoints, SQLite or MySQL, 17 PlaceholderAPI
+  `commands.yml`, Vault or PlayerPoints, SQLite or MySQL, 18 PlaceholderAPI
   placeholders, WorldGuard regions.
 
 ## Quick Links
@@ -85,7 +85,7 @@ the floating display swaps the rarity chest head for the actual reward item.
 
 ## Requirements
 
-Paper 1.20+ (Folia supported), Java 17, one economy (Vault + economy plugin,
+Paper 1.20+ (Paper or Spigot; Folia is not supported), Java 17, one economy (Vault + economy plugin,
 or PlayerPoints). Optional: PlaceholderAPI, WorldGuard, Oraxen, ItemsAdder,
 Nexo, MMOItems, HeadDatabase.
 
@@ -94,4 +94,4 @@ Details in [Building](docs/building.md).
 
 ## License
 
-MIT — see [LICENSE](LICENSE). By EnsisDev.
+Proprietary — see [LICENSE](LICENSE). © 2026 EnsisDev. All Rights Reserved.

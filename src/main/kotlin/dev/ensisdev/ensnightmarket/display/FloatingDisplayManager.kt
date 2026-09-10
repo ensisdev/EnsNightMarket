@@ -65,6 +65,7 @@ class FloatingDisplayManager(private val plugin: EnsNightMarket) {
     private val lastFollowPos = mutableMapOf<UUID, Location>()
     private val reflowing = mutableSetOf<UUID>()
     private var cacheTick = 0
+    private var tickCounter = 0
 
     init {
         plugin.server.scheduler.runTaskTimer(plugin, Runnable { tick() }, 1L, 1L)
@@ -105,9 +106,15 @@ class FloatingDisplayManager(private val plugin: EnsNightMarket) {
     }
 
     private fun tickFollow(owner: Player) {
-        val ordered = states.values.filter { it.owner == owner.uniqueId }.sortedBy { it.slot }
+        var ordered = states.values.filter { it.owner == owner.uniqueId }.sortedBy { it.slot }
         if (ordered.isEmpty()) return
-        if (ordered.any { it.base.world?.uid != owner.world.uid }) return
+        // Drop stale cross-world states instead of freezing the whole follow.
+        val stale = ordered.filter { it.base.world?.uid != owner.world.uid }
+        stale.forEach { removeState(it.itemId) }
+        if (stale.isNotEmpty()) {
+            ordered = ordered.filter { it.base.world?.uid == owner.world.uid }
+            if (ordered.isEmpty()) return
+        }
         val reflowingNow = reflowing.contains(owner.uniqueId)
         if (!reflowingNow) {
             val feet = owner.location.clone().apply { y = 0.0 }
@@ -267,7 +274,7 @@ class FloatingDisplayManager(private val plugin: EnsNightMarket) {
         revealEffects(location, offer)
         val world = location.world ?: return
         if (fx("reveal-flash")) {
-            world.spawnParticle(Particle.FLASH, location.clone().add(0.0, 0.5, 0.0), 3, 0.2, 0.2, 0.2, 0.0)
+            ParticleShapes.flash(world, location.clone().add(0.0, 0.5, 0.0))
             ParticleShapes.dust(world, location.clone().add(0.0, 0.6, 0.0), offer.rarity.color, 24, 1.4f, 0.25)
         }
         if (fx("reveal-sound-ladder")) {
@@ -377,6 +384,7 @@ class FloatingDisplayManager(private val plugin: EnsNightMarket) {
 
     private fun tick() {
         if (cacheTick++ % 100 == 0) refreshCache()
+        tickCounter++
         if (!cachedEnabled) return
 
         PerformanceMonitor.startTracking("floating_tick")
@@ -444,7 +452,7 @@ class FloatingDisplayManager(private val plugin: EnsNightMarket) {
                     val at = item.location.clone().add(0.0, 0.45, 0.0)
                     if (enableLOD) {
                         val lodLevel = LODSystem.getLODLevelForPlayer(owner, item.location)
-                        if (LODSystem.shouldUpdate(state.phase.toInt(), lodLevel)) {
+                        if (LODSystem.shouldUpdate(tickCounter, lodLevel)) {
                             val count = LODSystem.calculateParticleCount(1, lodLevel)
                             owner.spawnParticle(particle, at, count, 0.15, 0.15, 0.15, 0.0)
                             particleCount += count
@@ -517,7 +525,11 @@ class FloatingDisplayManager(private val plugin: EnsNightMarket) {
         return "${o.definition.displayName}<newline>$priceLine<newline>${o.rarity.displayName} <dark_gray>· $stockLine"
     }
 
-    private fun removeState(id: UUID) { val s = states.remove(id) ?: return; Bukkit.getEntity(s.itemId)?.remove(); Bukkit.getEntity(s.textId)?.remove(); Bukkit.getEntity(s.interactionId)?.remove() }
+    private fun removeState(id: UUID) {
+        val s = states.remove(id) ?: return
+        (Bukkit.getEntity(s.itemId) as? ItemDisplay)?.let { revealAnimator.cancelFor(it) }
+        Bukkit.getEntity(s.itemId)?.remove(); Bukkit.getEntity(s.textId)?.remove(); Bukkit.getEntity(s.interactionId)?.remove()
+    }
     fun closeSlot(owner: UUID, slot: Int, animated: Boolean = true) {
         val state = states.values.find { it.owner == owner && it.slot == slot } ?: return
         if (!animated || !fx("close-animation")) {

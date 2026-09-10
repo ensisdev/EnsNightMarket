@@ -20,6 +20,15 @@ refresh:
   price: 500.0
   cooldown-minutes: 30
 
+interaction:
+  # Havaya savurarak (sol tiklamadan) kafa acma menzili ve isabet yaricapi
+  raycast-range: 6.5
+  hit-radius: 1.5
+
+updates:
+  # GitHub releases uzerinden yeni surum kontrolu (konsol + op girisinde)
+  check: true
+
 session:
   # 0 = sinirsiz
   duration-minutes: 10

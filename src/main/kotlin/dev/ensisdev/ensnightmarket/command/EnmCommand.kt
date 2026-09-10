@@ -10,7 +10,9 @@ import org.bukkit.entity.Player
 
 class EnmCommand(private val plugin: EnsNightMarket) : CommandExecutor, TabCompleter {
     private val animCommand = AnimationCommand(plugin)
-    private val paidCooldowns = java.util.concurrent.ConcurrentHashMap<java.util.UUID, Long>()
+    private val cooldowns = RefreshCooldowns(plugin)
+
+    init { cooldowns.load() }
 
     private fun message(sender: CommandSender, key: String, replacements: Map<String, String> = emptyMap()): Boolean {
         Msgs.send(plugin, sender, key, replacements)
@@ -27,7 +29,14 @@ class EnmCommand(private val plugin: EnsNightMarket) : CommandExecutor, TabCompl
         if (!plugin.schedule.isOpen(p.world.name)) {
             message(p, "schedule-closed"); return
         }
-        plugin.display.showcase(p)
+        if (!plugin.market.canGenerate()) {
+            plugin.logger.warning("Market cannot open for ${p.name}: no enabled offers or no rarities configured.")
+            message(p, "no-offers"); return
+        }
+        runCatching { plugin.display.showcase(p) }.onFailure {
+            plugin.logger.warning("Showcase failed for ${p.name}: ${it.message}")
+            message(p, "no-offers"); return
+        }
         message(p, "showcase")
     }
 
@@ -39,17 +48,28 @@ class EnmCommand(private val plugin: EnsNightMarket) : CommandExecutor, TabCompl
             message(p, "schedule-closed"); return
         }
         val cooldownMs = plugin.config.getLong("refresh.cooldown-minutes", 30).coerceAtLeast(0) * 60_000L
-        val last = paidCooldowns[p.uniqueId] ?: 0L
+        cooldowns.sweep(cooldownMs)
+        val last = cooldowns.last(p.uniqueId)
         val remaining = last + cooldownMs - System.currentTimeMillis()
         if (remaining > 0) {
             message(p, "refresh-cooldown", mapOf("%time%" to shortDuration(remaining))); return
+        }
+        if (!plugin.market.canGenerate()) {
+            message(p, "no-offers"); return
         }
         val price = plugin.config.getDouble("refresh.price", 500.0).coerceAtLeast(0.0)
         if (price > 0 && !plugin.economy.withdraw(p, price)) {
             message(p, "insufficient"); return
         }
-        paidCooldowns[p.uniqueId] = System.currentTimeMillis()
-        plugin.market.refresh(p.uniqueId)
+        cooldowns.mark(p.uniqueId)
+        val ok = runCatching { plugin.market.refresh(p.uniqueId) }.onFailure {
+            plugin.logger.warning("Paid refresh failed for ${p.name}, refunding: ${it.message}")
+        }.isSuccess
+        if (!ok) {
+            cooldowns.clear(p.uniqueId)
+            if (price > 0) plugin.economy.deposit(p.uniqueId, price)
+            message(p, "no-offers"); return
+        }
         plugin.display.removeFor(p.uniqueId)
         plugin.display.showcase(p)
         message(p, "refresh-paid", mapOf("%price%" to plugin.economy.format(price)))
@@ -123,7 +143,11 @@ class EnmCommand(private val plugin: EnsNightMarket) : CommandExecutor, TabCompl
     private fun adminRefresh(sender: CommandSender, remaining: List<String>) {
         val target = remaining.firstOrNull()?.let { Bukkit.getPlayerExact(it) } ?: (sender as? Player)
         if (target == null) { message(sender, "not-found"); return }
-        plugin.market.refresh(target.uniqueId); plugin.display.removeFor(target.uniqueId)
+        val ok = runCatching { plugin.market.refresh(target.uniqueId) }.onFailure {
+            plugin.logger.warning("Admin refresh failed for ${target.name}: ${it.message}")
+        }.isSuccess
+        if (!ok) { message(sender, "no-offers"); return }
+        plugin.display.removeFor(target.uniqueId)
         message(sender, "reload")
     }
 
@@ -135,6 +159,7 @@ class EnmCommand(private val plugin: EnsNightMarket) : CommandExecutor, TabCompl
     }
 
     private fun adminReload(sender: CommandSender) {
+        plugin.mergeMissingConfigKeys()
         plugin.configs.reload()
         Lang.reload()
         CommandRegistry.reload()
@@ -144,6 +169,10 @@ class EnmCommand(private val plugin: EnsNightMarket) : CommandExecutor, TabCompl
         plugin.schedule.reload()
         plugin.protection.refresh()
         plugin.reloadStorage()
+        // Stale-state cleanup: open showcases keep old prices/names/heads otherwise.
+        plugin.display.removeAll()
+        dev.ensisdev.ensnightmarket.texture.HeadFactory.clearCache()
+        dev.ensisdev.ensnightmarket.performance.PerformanceMonitor.reset()
         message(sender, "reload")
     }
 
@@ -224,7 +253,7 @@ class EnmCommand(private val plugin: EnsNightMarket) : CommandExecutor, TabCompl
                 "admin-anim" -> {
                     if (args.size == 3) return listOf("preview", "stats", "quality", "patterns", "shapes", "reload", "help").filter { it.startsWith(args[2], true) }
                     if (args.size == 4) return when (args[2].lowercase()) {
-                        "preview" -> listOf("common", "uncommon", "rare", "legendary", "mysterious").filter { it.startsWith(args[3], true) }
+                        "preview" -> plugin.market.rarityDefinitions.keys.filter { it.startsWith(args[3], true) }
                         "quality" -> listOf("LOW", "MEDIUM", "HIGH", "ULTRA").filter { it.startsWith(args[3], true) }
                         else -> emptyList()
                     }

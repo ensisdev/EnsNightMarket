@@ -14,6 +14,13 @@ object Text {
     /** Spigot legacy envanter baþlýklarý / setDisplayName için. */
     fun legacy(s: String): String = legacy.serialize(component(s))
 
+    /** Converts legacy §/& color codes (e.g. from in-hand items) into MiniMessage tags. */
+    fun fromLegacy(s: String): String {
+        val parsed = runCatching { legacy.deserialize(s.replace('&', '§')) }.getOrNull()
+            ?: return s
+        return runCatching { mm.serialize(parsed) }.getOrDefault(s)
+    }
+
     fun prefixed(prefix: String, raw: String, replacements: Map<String, String> = emptyMap()): Component {
         var s = raw.replace("<prefix>", prefix)
         replacements.forEach { (a, b) -> s = s.replace(a, b) }

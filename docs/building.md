@@ -23,7 +23,7 @@ The jar is already shaded (Kotlin stdlib + SQLite bundled and relocated under
 | | |
 | --- | --- |
 | Language | Kotlin 2.1.20, JVM target 17 |
-| Compile API | Paper API 1.20.1 (runs on Paper **1.20+**, Folia supported) |
+| Compile API | Paper API 1.20.1 (runs on Paper **1.20+**; Folia is not supported) |
 | Bytecode | Java 17 |
 
 Display/Interaction entity APIs used are stable across 1.20–1.21, and every

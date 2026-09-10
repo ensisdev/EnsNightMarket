@@ -19,7 +19,7 @@ object Lang {
     fun reload() {
         ensure("tr_tr")
         ensure("en_en")
-        code = plugin.config.getString("language", "tr_tr")!!.lowercase()
+        code = (plugin.config.getString("language", "tr_tr") ?: "tr_tr").lowercase()
         data = load(code)
         fallback = load("tr_tr")
         reportMissing()

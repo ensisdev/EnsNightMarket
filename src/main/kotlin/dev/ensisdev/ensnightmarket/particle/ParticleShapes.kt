@@ -10,6 +10,17 @@ import kotlin.random.Random
 
 object ParticleShapes {
 
+    /**
+     * Version-proof dust particle: DUST on 1.20.5+, REDSTONE below.
+     * Resolved by name so it compiles against the 1.20 API either way.
+     */
+    val DUST: Particle by lazy { runCatching { Particle.valueOf("DUST") }.getOrElse { Particle.REDSTONE } }
+
+    /** FLASH with an END_ROD fallback if the enum ever disappears. */
+    fun flash(world: World, at: Location) {
+        runCatching { world.spawnParticle(Particle.FLASH, at, 3, 0.2, 0.2, 0.2, 0.0) }
+            .onFailure { world.spawnParticle(Particle.END_ROD, at, 6, 0.2, 0.2, 0.2, 0.05) }
+    }
     fun sphere(world: World, center: Location, particle: Particle, radius: Double, count: Int, speed: Double = 0.0) {
         if (count <= 0) return
         val goldenRatio = (1 + sqrt(5.0)) / 2
@@ -150,8 +161,8 @@ object ParticleShapes {
             val distance = Random.nextDouble() * 0.9
             val offset = direction.multiply(distance)
             val at = center.clone().add(offset)
-            if (viewer != null) viewer.spawnParticle(Particle.REDSTONE, at, 1, offset.x * speed, offset.y * speed, offset.z * speed, speed, options)
-            else world.spawnParticle(Particle.REDSTONE, at, 1, offset.x * speed, offset.y * speed, offset.z * speed, speed, options)
+            if (viewer != null) viewer.spawnParticle(DUST, at, 1, offset.x * speed, offset.y * speed, offset.z * speed, speed, options)
+            else world.spawnParticle(DUST, at, 1, offset.x * speed, offset.y * speed, offset.z * speed, speed, options)
         }
     }
 
@@ -162,8 +173,8 @@ object ParticleShapes {
         for (i in 0 until count) {
             val angle = (i.toFloat() / count) * 2 * Math.PI + spin
             val at = center.clone().add(radius * cos(angle), 0.0, radius * sin(angle))
-            if (viewer != null) viewer.spawnParticle(Particle.REDSTONE, at, 1, 0.0, 0.0, 0.0, 0.0, options)
-            else world.spawnParticle(Particle.REDSTONE, at, 1, 0.0, 0.0, 0.0, 0.0, options)
+            if (viewer != null) viewer.spawnParticle(DUST, at, 1, 0.0, 0.0, 0.0, 0.0, options)
+            else world.spawnParticle(DUST, at, 1, 0.0, 0.0, 0.0, 0.0, options)
         }
     }
 
@@ -173,8 +184,8 @@ object ParticleShapes {
         val options = Particle.DustOptions(color, size)
         for (i in 0 until count) {
             val at = base.clone().add(0.0, (i.toDouble() / count) * height, 0.0)
-            if (viewer != null) viewer.spawnParticle(Particle.REDSTONE, at, 1, 0.0, 0.02, 0.0, 0.0, options)
-            else world.spawnParticle(Particle.REDSTONE, at, 1, 0.0, 0.02, 0.0, 0.0, options)
+            if (viewer != null) viewer.spawnParticle(DUST, at, 1, 0.0, 0.02, 0.0, 0.0, options)
+            else world.spawnParticle(DUST, at, 1, 0.0, 0.02, 0.0, 0.0, options)
         }
     }
 

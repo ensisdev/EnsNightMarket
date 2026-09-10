@@ -20,7 +20,7 @@ and stock — nobody else can see your market.
 - **WorldGuard integration** - blacklist/whitelist regions plus an `ensnightmarket` region flag.
 - **Custom item rewards** - Oraxen, ItemsAdder, Nexo, MMOItems and HeadDatabase.
 - **Vault or PlayerPoints** economy, SQLite or MySQL/MariaDB storage with async writes.
-- **PlaceholderAPI expansion** with 17 placeholders.
+- **PlaceholderAPI expansion** with 18 placeholders.
 - **Full admin GUI** - manage offers, rarities, settings and player markets in-game.
 - **Paper-first, Spigot-friendly** - Adventure Components on Paper, legacy fallback on Spigot, no crashes.
 
@@ -37,7 +37,7 @@ and stock — nobody else can see your market.
 
 | Requirement | Version |
 | --- | --- |
-| Server | Paper (or Spigot-compatible) **1.20+**, Folia supported |
+| Server | Paper (or Spigot-compatible) **1.20+** — Folia is not supported |
 | Java | 17+ (bundled with modern server builds) |
 | Economy | Vault + an economy plugin, **or** PlayerPoints |
 | Optional | PlaceholderAPI, WorldGuard, Oraxen, ItemsAdder, Nexo, MMOItems, HeadDatabase |
@@ -52,4 +52,4 @@ and stock — nobody else can see your market.
 
 - **Version:** 2.1.0
 - **Author:** EnsisDev
-- **License:** MIT
+- **License:** Proprietary (© 2026 EnsisDev, All Rights Reserved)

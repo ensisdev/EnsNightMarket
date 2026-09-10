@@ -7,27 +7,27 @@ default-action: showcase
 commands:
   open:
     aliases: [ac]
-    permission: ""
+    permission: ensnightmarket.use
     description: "Open the market"
     action: showcase
   close:
     aliases: [hide, kapat]
-    permission: ""
+    permission: ensnightmarket.use
     description: "Close the market"
     action: close
   refresh:
     aliases: [yenile]
-    permission: ""
+    permission: ensnightmarket.use
     description: "Pay to refresh the market"
     action: refresh-paid
   info:
     aliases: [bilgi]
-    permission: ""
+    permission: ensnightmarket.use
     description: "Plugin information"
     action: info
   help:
     aliases: [yardim]
-    permission: ""
+    permission: ensnightmarket.use
     description: "Help"
     action: help
   admin:

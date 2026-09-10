@@ -41,7 +41,7 @@ commands:
 | --- | --- |
 | `action` | Which handler runs. See list below |
 | `aliases` | Alternative names players can type |
-| `permission` | Required permission node (`""` = everyone) |
+| `permission` | Required permission node (`ensnightmarket.use` for player commands, `""` = everyone) |
 | `description` | Shown in `/nightmarket help` |
 | `subcommands` | Nested nodes for `admin`-style commands |
 | `default-action` | Action used for `/nightmarket` with no arguments |

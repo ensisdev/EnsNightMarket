@@ -80,8 +80,10 @@ object OfferListMenu {
             return
         }
         val meta = hand.itemMeta
-        val name = if (meta != null) dev.ensisdev.ensnightmarket.util.Compat.displayNameOf(meta, pretty(hand.type)) else pretty(hand.type)
-        val lore = if (meta != null) dev.ensisdev.ensnightmarket.util.Compat.loreOf(meta) else emptyList()
+        val compat = dev.ensisdev.ensnightmarket.util.Compat
+        val text = dev.ensisdev.ensnightmarket.util.Text
+        val name = if (meta != null) text.fromLegacy(compat.displayNameOf(meta, pretty(hand.type))) else pretty(hand.type)
+        val lore = if (meta != null) compat.loreOf(meta).map(text::fromLegacy) else emptyList()
         val id = uniqueId(plugin, hand.type.name.lowercase())
         val def = OfferDef(
             id = id, displayName = name, material = hand.type.name,

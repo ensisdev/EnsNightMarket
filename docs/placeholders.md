@@ -47,6 +47,10 @@ All placeholders require a player context: `%ensnightmarket_<key>%`.
 ## Notes
 
 - Empty string is returned for players without data or console usage.
+- Market placeholders read the in-memory cache only and never generate a
+  market — this keeps them safe when PlaceholderAPI calls from async threads.
+  If the player has no cached market yet, they render empty until the player
+  opens the market once.
 - Duration placeholders use the language file units (`unit-day`, `unit-hour`,
   `unit-min`, `unit-sec`).
 - The expansion is registered/unregistered with the plugin (persist mode on),

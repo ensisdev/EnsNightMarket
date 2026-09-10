@@ -62,7 +62,31 @@ refresh:
 ```
 
 `/nightmarket refresh` (alias `yenile`) charges `price` and rerolls the player's market; the player
-must wait `cooldown-minutes` between paid rerolls.
+must wait `cooldown-minutes` between paid rerolls. Cooldowns persist in
+`cooldowns.yml`, so restarts do not reset them.
+
+## interaction
+
+```yaml
+interaction:
+  raycast-range: 6.5
+  hit-radius: 1.5
+```
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `raycast-range` | 6.5 | How far ahead a swing (left-click without hitting) can reveal a head |
+| `hit-radius` | 1.5 | How close to the aim ray a head must be to count as targeted |
+
+## updates
+
+```yaml
+updates:
+  check: true
+```
+
+When enabled, the plugin checks GitHub releases once after startup and tells
+admins on join when a newer version exists.
 
 ## session
 

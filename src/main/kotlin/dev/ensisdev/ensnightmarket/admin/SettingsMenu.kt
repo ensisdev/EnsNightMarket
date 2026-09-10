@@ -26,13 +26,13 @@ object SettingsMenu {
         inv.setItem(20, num(Material.REPEATER, Lang.get("gui-s-open-tick"), "${c.getLong("schedule.open-tick", 13000)}", "setting:openTick"))
         inv.setItem(21, num(Material.REPEATER, Lang.get("gui-s-close-tick"), "${c.getLong("schedule.close-tick", 23000)}", "setting:closeTick"))
         inv.setItem(27, AdminItems.button(Material.GOLD_INGOT, Lang.get("gui-cat-economy"), emptyList(), "noop"))
-        inv.setItem(28, num(Material.EMERALD, Lang.get("gui-s-economy"), c.getString("economy.provider", "VAULT")!!, "setting:economy"))
+        inv.setItem(28, num(Material.EMERALD, Lang.get("gui-s-economy"), c.getString("economy.provider", "VAULT") ?: "VAULT", "setting:economy"))
         inv.setItem(29, toggle(Lang.get("gui-s-paid-refresh"), c.getBoolean("refresh.enabled", true), "setting:paidRefresh"))
         inv.setItem(30, num(Material.GOLD_NUGGET, Lang.get("gui-s-refresh-price"), "${c.getDouble("refresh.price", 500.0)}", "setting:refreshPrice"))
         inv.setItem(31, num(Material.CLOCK, Lang.get("gui-s-refresh-cooldown"), "${c.getLong("refresh.cooldown-minutes", 30)}", "setting:refreshCooldown"))
         inv.setItem(36, AdminItems.button(Material.REDSTONE, Lang.get("gui-cat-system"), emptyList(), "noop"))
         inv.setItem(37, num(Material.CLOCK, Lang.get("gui-s-session-duration"), "${c.getLong("session.duration-minutes", 10)}", "setting:sessionDuration"))
-        inv.setItem(38, num(Material.DIAMOND, Lang.get("gui-s-quality"), c.getString("performance.animation-quality", "HIGH")!!, "setting:quality"))
+        inv.setItem(38, num(Material.DIAMOND, Lang.get("gui-s-quality"), c.getString("performance.animation-quality", "HIGH") ?: "HIGH", "setting:quality"))
         inv.setItem(39, toggle(Lang.get("gui-s-follow"), c.getBoolean("session.follow-enabled", true), "setting:follow"))
         inv.setItem(40, AdminItems.button(Material.OAK_DOOR, Lang.get("common-back"), emptyList(), "back-main"))
         inv.setItem(43, AdminItems.button(Material.BARRIER, Lang.get("common-close"), emptyList(), "close"))
@@ -56,19 +56,19 @@ object SettingsMenu {
             "paidRefresh" -> flip(plugin, player, "refresh.enabled")
             "follow" -> flip(plugin, player, "session.follow-enabled")
             "economy" -> {
-                val next = if (plugin.config.getString("economy.provider", "VAULT")!!.uppercase() == "VAULT") "PLAYER_POINTS" else "VAULT"
+                val next = if ((plugin.config.getString("economy.provider", "VAULT") ?: "VAULT").uppercase() == "VAULT") "PLAYER_POINTS" else "VAULT"
                 YmlWriter.setConfig(plugin, "economy.provider", next)
                 plugin.economy.refresh()
                 saved(plugin, player)
             }
             "quality" -> {
                 val order = listOf("LOW", "MEDIUM", "HIGH", "ULTRA")
-                val current = plugin.config.getString("performance.animation-quality", "HIGH")!!.uppercase()
+                val current = (plugin.config.getString("performance.animation-quality", "HIGH") ?: "HIGH").uppercase()
                 val next = order[(order.indexOf(current).coerceAtLeast(0) + 1) % order.size]
                 YmlWriter.setConfig(plugin, "performance.animation-quality", next)
                 saved(plugin, player)
             }
-            "slots" -> askLong(plugin, player, 1, 54) { YmlWriter.setConfig(plugin, "market.slots", it) }
+            "slots" -> askLong(plugin, player, 1, 54) { YmlWriter.setConfig(plugin, "market.slots", it.toInt()) }
             "refreshHours" -> askLong(plugin, player, 1, 720) { YmlWriter.setConfig(plugin, "market.refresh-hours", it) }
             "openTick" -> askLong(plugin, player, 0, 23999) { YmlWriter.setConfig(plugin, "schedule.open-tick", it); plugin.schedule.reload() }
             "closeTick" -> askLong(plugin, player, 0, 23999) { YmlWriter.setConfig(plugin, "schedule.close-tick", it); plugin.schedule.reload() }

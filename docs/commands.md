@@ -20,6 +20,10 @@ without recompiling. See [commands.yml](configuration/commands-yml.md).
 With no arguments (`/nightmarket`) the `default-action: showcase` runs, so it
 behaves exactly like `/nightmarket open`.
 
+Player commands require `ensnightmarket.use` (default: everyone); admin
+commands require `ensnightmarket.admin` (reload: `ensnightmarket.reload`).
+See [Permissions](permissions.md).
+
 ## Admin Commands
 
 Permission node shown in parentheses.
@@ -29,7 +33,7 @@ Permission node shown in parentheses.
 | `/nightmarket admin [player]` | `ensnightmarket.admin` | Opens the admin GUI; with a player name opens that player's market |
 | `/nightmarket admin refresh <player>` | `ensnightmarket.admin` | Force-rerolls a player's market (free, no cooldown) |
 | `/nightmarket admin reset <player>` | `ensnightmarket.admin` | Deletes a player's market data completely |
-| `/nightmarket admin reload` | `ensnightmarket.reload` | Reloads configs, languages, commands, economy, schedule and displays |
+| `/nightmarket admin reload` | `ensnightmarket.reload` | Reloads configs, languages, commands, economy, schedule and displays (closes open showcases so nobody keeps stale prices) |
 | `/nightmarket admin lang [code]` | `ensnightmarket.admin` | Shows the current language, or switches it (`tr_tr` / `en_en`) |
 | `/nightmarket admin anim <sub>` | `ensnightmarket.admin` | Animation debug tools, see below |
 

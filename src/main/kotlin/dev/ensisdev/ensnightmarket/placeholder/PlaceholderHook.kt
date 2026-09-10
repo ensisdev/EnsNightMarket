@@ -1,7 +1,9 @@
 package dev.ensisdev.ensnightmarket.placeholder
 
 import dev.ensisdev.ensnightmarket.EnsNightMarket
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import java.util.UUID
 
 /**
  * PlaceholderAPI'ye compile-time bagimlilik olmadan baglanir.
@@ -25,7 +27,7 @@ class PlaceholderHook(private val plugin: EnsNightMarket) {
                 "persist" -> true
                 "canRegister" -> true
                 "onPlaceholderRequest" -> onRequest(args?.getOrNull(0) as? Player, args?.getOrNull(1) as? String ?: "")
-                "onRequest" -> onRequest(args?.getOrNull(0) as? Player, args?.getOrNull(1) as? String ?: "")
+                "onRequest" -> onRequestOffline(args?.getOrNull(0) as? OfflinePlayer, args?.getOrNull(1) as? String ?: "")
                 "equals" -> (args?.getOrNull(0) === this)
                 "hashCode" -> System.identityHashCode(this)
                 "toString" -> "EnsNightMarketExpansion"
@@ -54,7 +56,36 @@ class PlaceholderHook(private val plugin: EnsNightMarket) {
 
     fun onRequest(player: Player?, params: String): String {
         if (player == null) return ""
-        val market = plugin.market.getOrCreate(player.uniqueId)
+        return resolve(player.uniqueId, player, params)
+    }
+
+    fun onRequestOffline(player: OfflinePlayer?, params: String): String {
+        if (player == null) return ""
+        return resolve(player.uniqueId, player.player, params)
+    }
+
+    /**
+     * Never generates a market here: PAPI may call from async threads
+     * (scoreboards, chat formatters), so only the in-memory cache is read.
+     * No market yet -> empty string.
+     */
+    private fun resolve(uuid: UUID, online: Player?, params: String): String {
+        return when (params.lowercase()) {
+            "economy" -> plugin.economy.providerName()
+            "balance" -> plugin.economy.format(plugin.economy.balance(uuid))
+            "schedule_enabled" -> plugin.schedule.enabled().toString()
+            "schedule_open" -> online?.let { plugin.schedule.isOpen(it.world.name) }?.toString() ?: ""
+            "session_active" -> plugin.display.hasSession(uuid).toString()
+            "session_remaining" -> sessionRemainingText(uuid)
+            "session_remaining_seconds" -> sessionRemainingSeconds(uuid)
+            "refresh_price" -> plugin.economy.format(plugin.config.getDouble("refresh.price", 500.0))
+            "refresh_enabled" -> plugin.config.getBoolean("refresh.enabled", true).toString()
+            else -> marketValue(uuid, params)
+        }
+    }
+
+    private fun marketValue(uuid: UUID, params: String): String {
+        val market = plugin.market.cached(uuid) ?: return ""
         return when (params.lowercase()) {
             "refresh" -> formatDuration((market.expiresAt - System.currentTimeMillis()).coerceAtLeast(0))
             "refresh_seconds" -> ((market.expiresAt - System.currentTimeMillis()).coerceAtLeast(0) / 1000).toString()
@@ -65,29 +96,20 @@ class PlaceholderHook(private val plugin: EnsNightMarket) {
             "remaining" -> market.offers.sumOf { it.stock }.toString()
             "purchased" -> market.offers.count { it.purchased }.toString()
             "purchases" -> market.offers.sumOf { it.purchases }.toString()
-            "economy" -> plugin.economy.providerName()
-            "balance" -> plugin.economy.format(plugin.economy.balance(player))
-            "schedule_open" -> plugin.schedule.isOpen(player.world.name).toString()
-            "schedule_enabled" -> plugin.schedule.enabled().toString()
-            "session_active" -> plugin.display.hasSession(player.uniqueId).toString()
-            "session_remaining" -> sessionRemainingText(player)
-            "session_remaining_seconds" -> sessionRemainingSeconds(player)
-            "refresh_price" -> plugin.economy.format(plugin.config.getDouble("refresh.price", 500.0))
-            "refresh_enabled" -> plugin.config.getBoolean("refresh.enabled", true).toString()
             else -> ""
         }
     }
 
-    private fun sessionRemainingText(player: Player): String {
-        val left = plugin.display.sessionRemaining(player.uniqueId)
-        if (!plugin.display.hasSession(player.uniqueId)) return ""
+    private fun sessionRemainingText(uuid: UUID): String {
+        val left = plugin.display.sessionRemaining(uuid)
+        if (!plugin.display.hasSession(uuid)) return ""
         if (left == Long.MAX_VALUE) return "∞"
         return formatDuration(left)
     }
 
-    private fun sessionRemainingSeconds(player: Player): String {
-        val left = plugin.display.sessionRemaining(player.uniqueId)
-        if (!plugin.display.hasSession(player.uniqueId)) return ""
+    private fun sessionRemainingSeconds(uuid: UUID): String {
+        val left = plugin.display.sessionRemaining(uuid)
+        if (!plugin.display.hasSession(uuid)) return ""
         if (left == Long.MAX_VALUE) return "-1"
         return (left / 1000).toString()
     }

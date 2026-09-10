@@ -1,21 +1,35 @@
-MIT License
+EnsNightMarket — Proprietary License
+Copyright (c) 2026 EnsisDev. All Rights Reserved.
 
-Copyright (c) 2026 EnsisDev
+1. GRANT OF USE
+   If you have lawfully obtained a copy of this software (the "Software"),
+   you are granted a non-exclusive, non-transferable right to install and use
+   the Software on Minecraft server(s) owned or operated by you.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+2. RESTRICTIONS
+   You may NOT, without prior written permission from EnsisDev:
+   a) redistribute, resell, sublicense, lease or share the Software or any
+      part of it, modified or unmodified, free or paid;
+   b) publish, leak or upload the Software (including the compiled jar) to
+      any website, forum, file host or version-control repository;
+   c) decompile, disassemble or reverse-engineer the Software, except where
+      such restriction is prohibited by applicable law;
+   d) remove or alter any copyright, trademark or attribution notices;
+   e) use the Software's name, branding or artwork to endorse another product.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+3. CONFIGURATION FILES
+   The YAML configuration files generated or shipped with the Software
+   (config.yml, rarities.yml, offers.yml, commands.yml, lang files) may be
+   freely edited to configure your own server. Edited configuration files
+   remain subject to section 2 (no redistribution of the Software itself).
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+4. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
+
+5. TERMINATION
+   Any violation of this license terminates your right to use the Software
+   immediately. All copies in your possession must then be deleted.

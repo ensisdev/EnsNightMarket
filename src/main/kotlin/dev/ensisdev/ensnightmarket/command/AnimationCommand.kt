@@ -122,7 +122,7 @@ class AnimationCommand(private val plugin: EnsNightMarket) : CommandExecutor, Ta
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
         return when (args.size) {
             2 -> when (args[0].lowercase()) {
-                "preview" -> listOf("common", "uncommon", "rare", "legendary", "mysterious").filter { it.startsWith(args[1], true) }
+                "preview" -> plugin.market.rarityDefinitions.keys.filter { it.startsWith(args[1], true) }
                 "quality" -> listOf("LOW", "MEDIUM", "HIGH", "ULTRA").filter { it.startsWith(args[1], true) }
                 else -> emptyList()
             }

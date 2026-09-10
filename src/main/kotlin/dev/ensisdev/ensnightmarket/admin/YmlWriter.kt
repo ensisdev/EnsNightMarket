@@ -12,8 +12,19 @@ object YmlWriter {
         return File(plugin.dataFolder, name)
     }
 
+    /** Copies the current file to name.bak so a GUI edit never destroys hand-written comments irreversibly. */
+    private fun backup(f: File) {
+        if (!f.exists()) return
+        runCatching {
+            val bak = File(f.parentFile, "${f.name}.bak")
+            if (bak.exists()) bak.delete()
+            f.copyTo(bak)
+        }
+    }
+
     fun saveOffer(plugin: EnsNightMarket, def: OfferDef) {
         val f = file(plugin, "offers.yml")
+        backup(f)
         val yml = YamlConfiguration.loadConfiguration(f)
         val p = "offers.${def.id}."
         yml.set(p + "display-name", def.displayName)
@@ -35,6 +46,7 @@ object YmlWriter {
 
     fun deleteOffer(plugin: EnsNightMarket, id: String) {
         val f = file(plugin, "offers.yml")
+        backup(f)
         val yml = YamlConfiguration.loadConfiguration(f)
         yml.set("offers.$id", null)
         yml.save(f)
@@ -43,6 +55,7 @@ object YmlWriter {
 
     fun saveRarity(plugin: EnsNightMarket, def: RarityDef) {
         val f = file(plugin, "rarities.yml")
+        backup(f)
         val yml = YamlConfiguration.loadConfiguration(f)
         val p = "rarities.${def.id}."
         yml.set(p + "display-name", def.displayName)
@@ -62,6 +75,7 @@ object YmlWriter {
 
     fun deleteRarity(plugin: EnsNightMarket, id: String) {
         val f = file(plugin, "rarities.yml")
+        backup(f)
         val yml = YamlConfiguration.loadConfiguration(f)
         yml.set("rarities.$id", null)
         yml.save(f)
@@ -77,5 +91,6 @@ object YmlWriter {
         plugin.configs.reload()
         plugin.market.loadDefinitions()
         plugin.market.dropCache()
+        dev.ensisdev.ensnightmarket.texture.HeadFactory.clearCache()
     }
 }

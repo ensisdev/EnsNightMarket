@@ -30,11 +30,11 @@ class MarketManager(private val plugin: EnsNightMarket, private var storage: Sto
             val e = p.getConfigurationSection("effects")
             rarityDefinitions[id] = RarityDef(
                 id = id,
-                displayName = p.getString("display-name", id)!!,
+                displayName = p.getString("display-name", id) ?: id,
                 weight = p.getDouble("weight", 1.0),
-                color = p.getString("color", "#FFFFFF")!!,
-                headType = p.getString("head.type", "TEXTURE_VALUE")!!,
-                headValue = p.getString("head.value", "")!!,
+                color = p.getString("color", "#FFFFFF") ?: "#FFFFFF",
+                headType = p.getString("head.type", "TEXTURE_VALUE") ?: "TEXTURE_VALUE",
+                headValue = p.getString("head.value", "") ?: "",
                 particle = e?.getString("particle", "END_ROD") ?: "END_ROD",
                 particleCount = e?.getInt("particle-count", 3) ?: 3,
                 sound = e?.getString("sound", "BLOCK_NOTE_BLOCK_PLING") ?: "BLOCK_NOTE_BLOCK_PLING",
@@ -45,18 +45,18 @@ class MarketManager(private val plugin: EnsNightMarket, private var storage: Sto
         }
         plugin.configs.offers.getConfigurationSection("offers")?.getKeys(false)?.forEach { id ->
             val p = plugin.configs.offers.getConfigurationSection("offers.$id") ?: return@forEach
-            val material = p.getString("material", "STONE")!!
+            val material = p.getString("material", "STONE") ?: "STONE"
             if (dev.ensisdev.ensnightmarket.items.CustomItems.knownPrefix(material) &&
                 dev.ensisdev.ensnightmarket.items.CustomItems.resolve(material, 1) == null) {
                 plugin.logger.warning("Offer '$id' skipped: custom item '$material' could not be resolved. Is the provider plugin installed?")
                 return@forEach
             }
             offerDefinitions[id] = OfferDef(
-                id, p.getString("display-name", id)!!, material,
+                id, p.getString("display-name", id) ?: id, material,
                 p.getInt("amount", 1).coerceIn(1, 64), p.getDouble("base-price", 100.0).coerceAtLeast(0.0),
                 p.getInt("discount-min", 10), p.getInt("discount-max", 50), p.getInt("stock-min", 1).coerceAtLeast(0),
                 p.getInt("stock-max", 2).coerceAtLeast(p.getInt("stock-min", 1)),
-                p.getString("rarity", "random")!!, p.getString("permission"), p.getInt("max-purchases", 0),
+                p.getString("rarity", "random") ?: "random", p.getString("permission"), p.getInt("max-purchases", 0),
                 p.getStringList("lore"), p.getBoolean("enabled", true)
             )
         }
@@ -67,6 +67,10 @@ class MarketManager(private val plugin: EnsNightMarket, private var storage: Sto
         storage.load(uuid, offerDefinitions, rarityDefinitions)?.let { markets[uuid] = it; return it }
         return refresh(uuid)
     }
+
+    /** True when a market can currently be rolled (used to fail gracefully instead of throwing). */
+    fun canGenerate(): Boolean =
+        offerDefinitions.values.any { it.enabled } && rarityDefinitions.isNotEmpty()
 
     fun generate(uuid: UUID): PlayerMarket {
         val pool = offerDefinitions.values.filter { it.enabled }
@@ -121,7 +125,9 @@ class MarketManager(private val plugin: EnsNightMarket, private var storage: Sto
             if (!giveFits(stack, uuid)) return PurchaseResult(false, "inventory")
             if (!charge(offer.price)) return PurchaseResult(false, "insufficient")
             if (!give(stack)) {
-                plugin.economy.deposit(uuid, offer.price)
+                if (!plugin.economy.deposit(uuid, offer.price)) {
+                    plugin.logger.warning("Refund FAILED for $uuid after a failed give (${offer.definition.id}, ${offer.price}). Manual compensation may be needed.")
+                }
                 return PurchaseResult(false, "inventory")
             }
             offer.stock--
@@ -132,17 +138,23 @@ class MarketManager(private val plugin: EnsNightMarket, private var storage: Sto
         } finally { locks.remove(uuid) }
     }
 
+    /** Exact simulation of Inventory.addItem() over a copy (storage slots only, like Bukkit). */
     private fun giveFits(stack: ItemStack, uuid: UUID): Boolean {
         val player = plugin.server.getPlayer(uuid) ?: return false
+        val contents = player.inventory.storageContents.map { it?.clone() }
         var remaining = stack.amount
-        player.inventory.storageContents.forEach { existing ->
-            if (existing == null) return@forEach
-            if (!existing.isSimilar(stack)) return@forEach
-            remaining -= (existing.maxStackSize - existing.amount).coerceAtLeast(0)
+        val limit = stack.maxStackSize
+        for (existing in contents) {
+            if (remaining <= 0) break
+            if (existing == null || !existing.isSimilar(stack)) continue
+            val space = (minOf(existing.maxStackSize, limit) - existing.amount).coerceAtLeast(0)
+            val take = minOf(space, remaining)
+            existing.amount = existing.amount + take
+            remaining -= take
         }
-        val empty = player.inventory.storageContents.count { it == null }
-        remaining -= empty * stack.maxStackSize
-        return remaining <= 0
+        if (remaining <= 0) return true
+        val empty = contents.count { it == null }
+        return remaining - empty * limit <= 0
     }
 
     fun createReward(o: MarketOffer): ItemStack {
@@ -168,7 +180,8 @@ class MarketManager(private val plugin: EnsNightMarket, private var storage: Sto
 
     private fun chooseWeightedRarity(): RarityDef {
         val valid = rarityDefinitions.values.filter { it.weight > 0.0 }
-        if (valid.isEmpty()) return rarityDefinitions.values.first()
+        if (valid.isEmpty()) return rarityDefinitions.values.firstOrNull()
+            ?: error("No rarities configured in rarities.yml")
         var roll = Random.nextDouble(valid.sumOf { it.weight })
         for (r in valid) { roll -= r.weight; if (roll <= 0) return r }
         return valid.last()
