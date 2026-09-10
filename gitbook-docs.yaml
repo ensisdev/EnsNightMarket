@@ -5,10 +5,16 @@ site:
   description: Documentation for EnsNightMarket — a modern per-player Night Market plugin for Paper 1.20+
 
 structure:
-  - type: space
-    key: main
+  - type: section
+    key: docs
     title: Documentation
-    path: /
-    default: true
-    content:
-      language: en
+    path: docs
+    children:
+      - type: space
+        key: main
+        title: English
+        path: .
+        default: true
+        content:
+          directory: .
+          language: en
